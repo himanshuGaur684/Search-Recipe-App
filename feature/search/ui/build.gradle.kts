@@ -84,4 +84,7 @@ dependencies {
 
     implementation(libs.hilt.compose.navigation)
 
+    testImplementation(libs.test.coroutines)
+    testImplementation(libs.mockito)
+
 }
