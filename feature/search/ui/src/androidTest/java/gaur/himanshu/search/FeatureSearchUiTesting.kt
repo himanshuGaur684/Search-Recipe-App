@@ -11,10 +11,12 @@ import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.test.espresso.Espresso.pressBack
 import gaur.himanshu.common.navigation.NavigationRoute
 import gaur.himanshu.search.domain.use_cases.DeleteRecipeUseCase
 import gaur.himanshu.search.domain.use_cases.GetAllRecipeUseCase
@@ -45,6 +47,7 @@ class FeatureSearchUiTesting {
 
     @get:Rule
     val composeRule = createComposeRule()
+
 
     private lateinit var getAllRecipeListUseCase: GetAllRecipeUseCase
     private lateinit var getRecipeDetailsUseCase: GetRecipeDetailsUseCase
@@ -236,51 +239,221 @@ class FeatureSearchUiTesting {
             waitForIdle()
             onNodeWithText(getRecipeResponse().first().strMeal).assertIsDisplayed()
 
-            onNodeWithTag(getRecipeResponse().first().strMeal.plus(0)).performClick()
+            onNodeWithTag(FavoriteScreenTestTag.DELETE).performClick()
 
             onNodeWithText("Nothing Found").assertIsDisplayed()
-
-
         }
     }
+
 
     @Test
     fun test_alphabetical() {
         initSuccessUseCase()
         testingEnv()
-
         with(composeRule) {
             onNodeWithTag(RecipeListScreenTestTag.SEARCH).performClick()
             onNodeWithTag(RecipeListScreenTestTag.SEARCH).performTextInput("chicken")
 
             onNodeWithTag(RecipeListScreenTestTag.LAZY_COL)
-                .onChildAt(0)
-                .performClick()
+                .onChildAt(0).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL)
+                .performScrollToNode(
+                    hasTestTag(getRecipeResponse().last().strMeal.plus(1))
+                )
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL).onChildAt(1).performClick()
 
             onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
             onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
 
-            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL).onChildAt(1)
-                .performClick()
-            waitForIdle()
-            onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
-            waitForIdle()
-            onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
-            waitForIdle()
             onNodeWithTag(RecipeListScreenTestTag.FLOATING_ACTION_BTN).performClick()
-            waitForIdle()
+
             onNodeWithTag(FavoriteScreenTestTag.DROP_DOWN).performClick()
-            waitForIdle()
             onNodeWithTag(FavoriteScreenTestTag.ALPHABETICAL).performClick()
-            waitForIdle()
-            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL).assertIsDisplayed()
-            waitForIdle()
+
             onNodeWithTag(FavoriteScreenTestTag.LAZY_COL)
                 .onChildAt(0)
-                .assertTextEquals(getRecipeResponse().first().strMeal.plus(0))
+                .assert(hasTestTag(getRecipeResponse().first().strMeal.plus(0)))
+
+            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL)
+                .onChildAt(1)
+                .assert(hasTestTag(getRecipeResponse().last().strMeal.plus(1)))
+
 
         }
 
+    }
+
+
+    @Test
+    fun test_less_ingredients() {
+        initSuccessUseCase()
+        testingEnv()
+        with(composeRule) {
+            onNodeWithTag(RecipeListScreenTestTag.SEARCH).performClick()
+            onNodeWithTag(RecipeListScreenTestTag.SEARCH).performTextInput("chicken")
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL)
+                .onChildAt(0).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL)
+                .performScrollToNode(
+                    hasTestTag(getRecipeResponse().last().strMeal.plus(1))
+                )
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL).onChildAt(1).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
+            onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
+
+            onNodeWithTag(RecipeListScreenTestTag.FLOATING_ACTION_BTN).performClick()
+
+            onNodeWithTag(FavoriteScreenTestTag.DROP_DOWN).performClick()
+            onNodeWithTag(FavoriteScreenTestTag.LESS_INGREDIENT).performClick()
+
+            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL)
+                .onChildAt(0)
+                .assert(hasTestTag(getRecipeResponse().last().strMeal.plus(0)))
+
+            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL)
+                .onChildAt(1)
+                .assert(hasTestTag(getRecipeResponse().first().strMeal.plus(1)))
+
+
+        }
+    }
+
+
+    @Test
+    fun test_resetSort() {
+        initSuccessUseCase()
+        testingEnv()
+        with(composeRule) {
+            onNodeWithTag(RecipeListScreenTestTag.SEARCH).performClick()
+            onNodeWithTag(RecipeListScreenTestTag.SEARCH).performTextInput("chicken")
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL)
+                .onChildAt(0).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL)
+                .performScrollToNode(
+                    hasTestTag(getRecipeResponse().last().strMeal.plus(1))
+                )
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL).onChildAt(1).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
+            onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
+
+            onNodeWithTag(RecipeListScreenTestTag.FLOATING_ACTION_BTN).performClick()
+
+            onNodeWithTag(FavoriteScreenTestTag.DROP_DOWN).performClick()
+            onNodeWithTag(FavoriteScreenTestTag.LESS_INGREDIENT).performClick()
+
+            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL)
+                .onChildAt(0)
+                .assert(hasTestTag(getRecipeResponse().last().strMeal.plus(0)))
+
+            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL)
+                .onChildAt(1)
+                .assert(hasTestTag(getRecipeResponse().first().strMeal.plus(1)))
+
+
+            onNodeWithTag(FavoriteScreenTestTag.DROP_DOWN).performClick()
+
+            onNodeWithTag(FavoriteScreenTestTag.RESET).performClick()
+
+            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL)
+                .onChildAt(0)
+                .assert(hasTestTag(getRecipeResponse().first().strMeal.plus(0)))
+
+            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL)
+                .onChildAt(1)
+                .assert(hasTestTag(getRecipeResponse().last().strMeal.plus(1)))
+
+
+        }
+
+
+    }
+
+
+    @Test
+    fun test_recipeDetailsFromFavorite() {
+        initSuccessUseCase()
+        testingEnv()
+        with(composeRule) {
+            onNodeWithTag(RecipeListScreenTestTag.SEARCH).performClick()
+            onNodeWithTag(RecipeListScreenTestTag.SEARCH).performTextInput("chicken")
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL).onChildAt(0).performClick()
+            onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
+
+            onNodeWithTag(RecipeListScreenTestTag.FLOATING_ACTION_BTN).performClick()
+
+            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL).onChildAt(0)
+                .assert(hasTestTag(getRecipeResponse().first().strMeal.plus(0)))
+                .performClick()
+
+
+            onNodeWithText(getRecipeResponse().first().strMeal).assertIsDisplayed()
+
+
+        }
+
+
+    }
+
+
+    @Test
+    fun test_deleteFromRecipeDetails() {
+        initSuccessUseCase()
+        testingEnv()
+        with(composeRule) {
+
+            onNodeWithTag(RecipeListScreenTestTag.SEARCH).performClick()
+            onNodeWithTag(RecipeListScreenTestTag.SEARCH).performTextInput("chicken")
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL).onChildAt(0).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
+            onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
+
+            onNodeWithTag(RecipeListScreenTestTag.FLOATING_ACTION_BTN).performClick()
+
+            onNodeWithTag(FavoriteScreenTestTag.LAZY_COL)
+                .onChildAt(0)
+                .assert(hasTestTag(getRecipeResponse().first().strMeal.plus(0)))
+
+            pressBack()
+
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL)
+                .onChildAt(0).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.DELETE).performClick()
+
+            onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
+
+            onNodeWithTag(RecipeListScreenTestTag.FLOATING_ACTION_BTN).performClick()
+
+            onNodeWithText("Nothing Found").assertIsDisplayed()
+
+
+        }
     }
 
 

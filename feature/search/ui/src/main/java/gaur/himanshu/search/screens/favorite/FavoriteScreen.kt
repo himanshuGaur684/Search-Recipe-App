@@ -52,14 +52,16 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import gaur.himanshu.common.navigation.NavigationRoute
 import gaur.himanshu.common.utils.UiText
+import gaur.himanshu.search.screens.favorite.FavoriteScreenTestTag.DELETE
 import kotlinx.coroutines.flow.collectLatest
 
 object FavoriteScreenTestTag {
-    const val LAZY_COL = "lazy_col_fav"
+    const val LAZY_COL = "lazy_col"
     const val DROP_DOWN = "drop_down"
     const val ALPHABETICAL = "alphabetical"
     const val LESS_INGREDIENT = "less_ingredient"
     const val RESET = "rest"
+    const val DELETE = "delete"
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -196,7 +198,7 @@ fun FavoriteScreen(
                 ) {
                     itemsIndexed(list){index,it->
                         Card(
-                            modifier = Modifier.testTag(it.toString())
+                            modifier = Modifier.testTag(it.strMeal.plus(index))
                                 .padding(horizontal = 12.dp, vertical = 4.dp)
                                 .clickable { onClick.invoke(it.idMeal) },
                             shape = RoundedCornerShape(12.dp)
@@ -221,12 +223,13 @@ fun FavoriteScreen(
                                         )
                                     },
                                     modifier = Modifier
+                                        .testTag(DELETE)
                                         .align(Alignment.TopEnd)
                                         .padding(12.dp)
                                         .background(
                                             color = Color.White,
                                             shape = CircleShape
-                                        ).testTag(it.strMeal.plus(index))
+                                        )
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,

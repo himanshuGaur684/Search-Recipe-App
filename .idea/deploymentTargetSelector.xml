@@ -13,19 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="test_recipeLIstFailure()">
+      <SelectionState runConfigName="test_less_ingredients()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="test_recipeListSuccess_recipeDetailsSuccess()">
+      <SelectionState runConfigName="test_resetSort()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="test_insertion()">
+      <SelectionState runConfigName="test_recipeDetailsFromFavorite()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="test_delete()">
+      <SelectionState runConfigName="test_deleteFromRecipeDetails()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="test_alphabetical()">
+      <SelectionState runConfigName="FeatureSearchUiTesting">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

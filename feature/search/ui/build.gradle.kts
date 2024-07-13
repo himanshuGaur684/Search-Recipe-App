@@ -87,4 +87,7 @@ dependencies {
     testImplementation(libs.test.coroutines)
     testImplementation(libs.mockito)
 
+    androidTestImplementation(libs.espresso)
+
+
 }
