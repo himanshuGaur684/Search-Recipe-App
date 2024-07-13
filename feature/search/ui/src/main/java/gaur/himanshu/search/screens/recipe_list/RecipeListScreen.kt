@@ -51,7 +51,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 object RecipeListScreenTestTag {
     const val SEARCH = "search"
-    const val LAZY_COL = "lazy_col"
+    const val LAZY_COL = "lazy_col_recipe"
     const val FLOATING_ACTION_BTN = "fab"
 }
 

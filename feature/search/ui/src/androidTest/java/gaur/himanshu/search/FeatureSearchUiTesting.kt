@@ -253,22 +253,24 @@ class FeatureSearchUiTesting {
             onNodeWithTag(RecipeListScreenTestTag.SEARCH).performClick()
             onNodeWithTag(RecipeListScreenTestTag.SEARCH).performTextInput("chicken")
 
-            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL).onChildAt(0).performClick()
+            onNodeWithTag(RecipeListScreenTestTag.LAZY_COL)
+                .onChildAt(0)
+                .performClick()
 
             onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
             onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
 
             onNodeWithTag(RecipeListScreenTestTag.LAZY_COL).onChildAt(1)
                 .performClick()
-
+            waitForIdle()
             onNodeWithTag(RecipeDetailsScreenTestTag.INSERT).performClick()
-
+            waitForIdle()
             onNodeWithTag(RecipeDetailsScreenTestTag.ARROW_BACK).performClick()
-
+            waitForIdle()
             onNodeWithTag(RecipeListScreenTestTag.FLOATING_ACTION_BTN).performClick()
-
+            waitForIdle()
             onNodeWithTag(FavoriteScreenTestTag.DROP_DOWN).performClick()
-
+            waitForIdle()
             onNodeWithTag(FavoriteScreenTestTag.ALPHABETICAL).performClick()
             waitForIdle()
             onNodeWithTag(FavoriteScreenTestTag.LAZY_COL).assertIsDisplayed()
