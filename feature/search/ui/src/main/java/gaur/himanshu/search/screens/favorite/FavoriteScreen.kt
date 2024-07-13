@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -51,6 +53,14 @@ import coil.compose.AsyncImage
 import gaur.himanshu.common.navigation.NavigationRoute
 import gaur.himanshu.common.utils.UiText
 import kotlinx.coroutines.flow.collectLatest
+
+object FavoriteScreenTestTag {
+    const val LAZY_COL = "lazy_col_fav"
+    const val DROP_DOWN = "drop_down"
+    const val ALPHABETICAL = "alphabetical"
+    const val LESS_INGREDIENT = "less_ingredient"
+    const val RESET = "rest"
+}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -89,50 +99,58 @@ fun FavoriteScreen(
                 style = MaterialTheme.typography.headlineSmall
             )
         }, actions = {
-            IconButton(onClick = {
-                showDropDown.value = showDropDown.value.not()
-            }) {
+            IconButton(
+                modifier = Modifier.testTag(FavoriteScreenTestTag.DROP_DOWN),
+                onClick = {
+                    showDropDown.value = showDropDown.value.not()
+                }) {
                 Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
             }
             if (showDropDown.value) {
                 DropdownMenu(expanded = showDropDown.value, onDismissRequest = {
                     showDropDown.value = !showDropDown.value
                 }) {
-                    DropdownMenuItem(text = { Text(text = "Alphabetical") }, onClick = {
-                        selectedIndex.value = 0
-                        showDropDown.value = showDropDown.value.not()
-                        viewModel.onEvent(FavoriteScreen.Event.AlphabeticalSort)
-                    }, leadingIcon = {
-                        RadioButton(selected = selectedIndex.value == 0, onClick = {
+                    DropdownMenuItem(
+                        modifier = Modifier.testTag(FavoriteScreenTestTag.ALPHABETICAL),
+                        text = { Text(text = "Alphabetical") }, onClick = {
                             selectedIndex.value = 0
                             showDropDown.value = showDropDown.value.not()
                             viewModel.onEvent(FavoriteScreen.Event.AlphabeticalSort)
+                        }, leadingIcon = {
+                            RadioButton(selected = selectedIndex.value == 0, onClick = {
+                                selectedIndex.value = 0
+                                showDropDown.value = showDropDown.value.not()
+                                viewModel.onEvent(FavoriteScreen.Event.AlphabeticalSort)
+                            })
                         })
-                    })
 
-                    DropdownMenuItem(text = { Text(text = "Less Ingredients") }, onClick = {
-                        selectedIndex.value = 1
-                        showDropDown.value = showDropDown.value.not()
-                        viewModel.onEvent(FavoriteScreen.Event.LessIngredientsSort)
-                    }, leadingIcon = {
-                        RadioButton(selected = selectedIndex.value == 1, onClick = {
+                    DropdownMenuItem(
+                        modifier = Modifier.testTag(FavoriteScreenTestTag.LESS_INGREDIENT),
+                        text = { Text(text = "Less Ingredients") }, onClick = {
                             selectedIndex.value = 1
                             showDropDown.value = showDropDown.value.not()
                             viewModel.onEvent(FavoriteScreen.Event.LessIngredientsSort)
+                        }, leadingIcon = {
+                            RadioButton(selected = selectedIndex.value == 1, onClick = {
+                                selectedIndex.value = 1
+                                showDropDown.value = showDropDown.value.not()
+                                viewModel.onEvent(FavoriteScreen.Event.LessIngredientsSort)
+                            })
                         })
-                    })
 
-                    DropdownMenuItem(text = { Text(text = "Reset") }, onClick = {
-                        selectedIndex.value = 2
-                        showDropDown.value = showDropDown.value.not()
-                        viewModel.onEvent(FavoriteScreen.Event.ResetSort)
-                    }, leadingIcon = {
-                        RadioButton(selected = selectedIndex.value == 2, onClick = {
+                    DropdownMenuItem(
+                        modifier = Modifier.testTag(FavoriteScreenTestTag.RESET),
+                        text = { Text(text = "Reset") }, onClick = {
                             selectedIndex.value = 2
                             showDropDown.value = showDropDown.value.not()
                             viewModel.onEvent(FavoriteScreen.Event.ResetSort)
+                        }, leadingIcon = {
+                            RadioButton(selected = selectedIndex.value == 2, onClick = {
+                                selectedIndex.value = 2
+                                showDropDown.value = showDropDown.value.not()
+                                viewModel.onEvent(FavoriteScreen.Event.ResetSort)
+                            })
                         })
-                    })
 
                 }
             }
@@ -172,13 +190,13 @@ fun FavoriteScreen(
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier
+                    modifier = Modifier.testTag(FavoriteScreenTestTag.LAZY_COL)
                         .padding(it)
                         .fillMaxSize()
                 ) {
-                    items(list) {
+                    itemsIndexed(list){index,it->
                         Card(
-                            modifier = Modifier
+                            modifier = Modifier.testTag(it.toString())
                                 .padding(horizontal = 12.dp, vertical = 4.dp)
                                 .clickable { onClick.invoke(it.idMeal) },
                             shape = RoundedCornerShape(12.dp)
@@ -203,11 +221,12 @@ fun FavoriteScreen(
                                         )
                                     },
                                     modifier = Modifier
-                                        .align(Alignment.TopEnd).padding(12.dp)
+                                        .align(Alignment.TopEnd)
+                                        .padding(12.dp)
                                         .background(
-                                        color = Color.White,
-                                        shape = CircleShape
-                                    )
+                                            color = Color.White,
+                                            shape = CircleShape
+                                        ).testTag(it.strMeal.plus(index))
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,

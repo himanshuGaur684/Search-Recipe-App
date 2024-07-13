@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
@@ -44,6 +45,12 @@ import gaur.himanshu.common.navigation.NavigationRoute
 import gaur.himanshu.common.utils.UiText
 import gaur.himanshu.search.domain.model.RecipeDetails
 import kotlinx.coroutines.flow.collectLatest
+
+object RecipeDetailsScreenTestTag{
+    const val INSERT="insert"
+    const val DELETE="delete"
+    const val ARROW_BACK = "arrow_back"
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,9 +90,11 @@ fun RecipeDetailsScreen(
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null,
                 modifier = Modifier.clickable {
                     onNavigationClick.invoke()
-                })
+                }.testTag(RecipeDetailsScreenTestTag.ARROW_BACK))
         }, actions = {
-            IconButton(onClick = {
+            IconButton(
+                modifier = Modifier.testTag(RecipeDetailsScreenTestTag.INSERT),
+                onClick = {
                 uiState.value.data?.let {
                     onFavoriteClick.invoke(it)
 
@@ -93,7 +102,9 @@ fun RecipeDetailsScreen(
             }) {
                 Icon(imageVector = Icons.Default.Star, contentDescription = null)
             }
-            IconButton(onClick = {
+            IconButton(
+                modifier = Modifier.testTag(RecipeDetailsScreenTestTag.DELETE),
+                onClick = {
                 uiState.value.data?.let {
                     onDelete.invoke(it)
 
