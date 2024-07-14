@@ -1,12 +1,11 @@
-package gaur.himanshu.search
+package gaur.himanshu.searchrecipeapp
 
+import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -17,15 +16,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.test.espresso.Espresso.pressBack
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import gaur.himanshu.common.navigation.NavigationRoute
+import gaur.himanshu.search.data.di.SearchDataModule
 import gaur.himanshu.search.domain.use_cases.DeleteRecipeUseCase
 import gaur.himanshu.search.domain.use_cases.GetAllRecipeUseCase
 import gaur.himanshu.search.domain.use_cases.GetAllRecipesFromLocalDbUseCase
 import gaur.himanshu.search.domain.use_cases.GetRecipeDetailsUseCase
 import gaur.himanshu.search.domain.use_cases.InsertRecipeUseCase
-import gaur.himanshu.search.repository.FakeFailureRepoIMpl
-import gaur.himanshu.search.repository.FakeFailureRepoIMpl.Companion.errorMessage
-import gaur.himanshu.search.repository.FakeSuccessRepoImpl
 import gaur.himanshu.search.screens.details.RecipeDetails
 import gaur.himanshu.search.screens.details.RecipeDetailsScreen
 import gaur.himanshu.search.screens.details.RecipeDetailsScreenTestTag
@@ -37,18 +37,33 @@ import gaur.himanshu.search.screens.recipe_list.RecipeList
 import gaur.himanshu.search.screens.recipe_list.RecipeListScreen
 import gaur.himanshu.search.screens.recipe_list.RecipeListScreenTestTag
 import gaur.himanshu.search.screens.recipe_list.RecipeListViewModel
-import gaur.himanshu.search.utils.getRecipeResponse
+import gaur.himanshu.searchrecipeapp.di.DataBaseModule
+import gaur.himanshu.searchrecipeapp.repository.FakeFailureRepoIMpl
+import gaur.himanshu.searchrecipeapp.repository.FakeFailureRepoIMpl.Companion.errorMessage
+import gaur.himanshu.searchrecipeapp.repository.FakeSuccessRepoImpl
+import gaur.himanshu.searchrecipeapp.utils.getRecipeResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-// First Approach of writing UI Testing
+// Third Approach of writing UI Testing
 
-class FeatureSearchUiTesting {
+@HiltAndroidTest
+@UninstallModules(SearchDataModule::class, DataBaseModule::class)
+class FeatureSearchUiTestingAllCase {
+    @get:Rule(order = 1)
+    val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    val composeRule = createComposeRule()
+
+    @get:Rule(order = 2)
+    val composeRule = createAndroidComposeRule<MainActivity>()
+
+    @Before
+    fun setup() {
+        hiltRule.inject()
+    }
+
 
 
     private lateinit var getAllRecipeListUseCase: GetAllRecipeUseCase
@@ -101,7 +116,7 @@ class FeatureSearchUiTesting {
         val favoriteViewModel =
             FavoriteViewModel(getAlRecipesFromLocalDbUseCase, deleteRecipeUseCase)
 
-        composeRule.setContent {
+        composeRule.activity.setContent {
             val navHostController = rememberNavController()
             NavHost(
                 navController = navHostController,
@@ -457,6 +472,9 @@ class FeatureSearchUiTesting {
 
         }
     }
+
+
+
 
 
 }

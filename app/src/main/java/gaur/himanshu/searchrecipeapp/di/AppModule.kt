@@ -26,6 +26,12 @@ object AppModule {
     }
 
 
+
+}
+
+@InstallIn(SingletonComponent::class)
+@Module
+object DataBaseModule{
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context) = AppDatabase.getInstance(context)

@@ -16,7 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "gaur.himanshu.searchrecipeapp.DaggerRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -75,6 +75,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    androidTestImplementation(libs.dagger.hilt.testing)
+    androidTestImplementation(libs.espresso)
+
 
     implementation(libs.navigation.compose)
 
